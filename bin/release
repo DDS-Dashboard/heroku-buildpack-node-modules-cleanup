@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# bin/compile BUILD_DIR CACHE_DIR ENV_DIR
+
+set -euo pipefail
+
+BUILD_DIR=$1
+RELEASE_FILE="${BUILD_DIR}/tmp/heroku-buildpack-release-step.yml"
+
+find "$BUILD_DIR" -name 'node_modules' -type d -prune -print -exec rm -rf '{}' \; >/dev/null 2>&1
+
+# Whilst the release file is always written by the buildpack, some apps use
+# third-party slug cleaner buildpacks to remove this and other files, so we
+# cannot assume it still exists by the time the release step runs.
+if [[ -f "${RELEASE_FILE}" ]]; then
+  cat "${RELEASE_FILE}"
+fi
